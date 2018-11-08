@@ -125,7 +125,7 @@ body <- dashboardBody(
                           style = "color:red"
                          ),
                          dataTableOutput(outputId = "single_table_result"),
-                         hidden(actionButton("single_download_results", icon = icon("download"), "Download results"))
+                         hidden(downloadButton("single_download_results", "Download results"))
                 ),
                 tabPanel("Visual",
                          value = "single_visual_result",
@@ -136,7 +136,7 @@ body <- dashboardBody(
                          verbatimTextOutput(
                            outputId = "single_log"
                          ),
-                         hidden(actionButton("single_download_log", icon = icon("download"), "Download log"))
+                         hidden(downloadButton("single_download_log", "Download log"))
                 )
               )
             ),
@@ -245,7 +245,7 @@ body <- dashboardBody(
                     style = "color:red"
                   ),
                   dataTableOutput(outputId = "dual_table_result"),
-                  hidden(actionButton("dual_download_results", icon = icon("download"), "Download results"))
+                  hidden(downloadButton("dual_download_results", "Download results"))
                 ),
                 tabPanel("Visual",
                          value = "dual_visual_result",
@@ -254,7 +254,7 @@ body <- dashboardBody(
                          value = "dual_log",
                          verbatimTextOutput(outputId = "dual_log"),
                          hidden(
-                           actionButton("dual_download_log", icon = icon("download"), "Download log")
+                           downloadButton("dual_download_log", "Download log")
                          ))
               )
             ),

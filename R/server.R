@@ -57,7 +57,10 @@ define_distance_metric <- function(metric){
 
 server <- function(input, output, session) {
   
-  notif_running <<- NULL
+  notif_running <- NULL
+  final_result <- NULL
+  run_time <- NULL
+  log <- NULL
   
   #########################
   #### SINGLE INDEXING ####
@@ -161,8 +164,9 @@ server <- function(input, output, session) {
         output$single_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
+        run_time <<- format(Sys.time())
         output$single_table_result_error_message <- renderText("")
-        final_result = DNABarcodeCompatibility:::final_result(
+        final_result <<- DNABarcodeCompatibility:::final_result(
           isolate(single_index_df()[which(single_index_df()$valid==TRUE),]),
           isolate(single_sample_number()),
           isolate(single_mplex_level()),
@@ -180,7 +184,7 @@ server <- function(input, output, session) {
         output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
         #(display log only when execution is okay)
         log_text = ""
-        log_text = paste(log_text, format(Sys.time()), "\n", sep="")
+        log_text = paste(log_text, run_time, "\n", sep="")
         log_text = paste(log_text, "File: ", input$single_file$name, "\n", sep="")
         log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$single_platform], "\n", sep="")
         log_text = paste(log_text, "Sample number: ", input$single_sample_number, "\n", sep="")
@@ -192,8 +196,8 @@ server <- function(input, output, session) {
         log_text = paste(log_text, "--------------- Index ---------------", "\n", sep="")
         log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
         ind <- mutate(single_index_df(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
-        log_text = paste(log_text, paste(ind$out, collapse = "\n"), "\n", sep="")
-        output$single_log <- renderText(log_text)
+        log <<- paste(log_text, paste(ind$out, collapse = "\n"), "\n", sep="")
+        output$single_log <- renderText(log)
         show("single_download_log")
         
         #Remove running notification
@@ -201,10 +205,28 @@ server <- function(input, output, session) {
           removeNotification(notif_running)
           notif_running <<- NULL
         }
-        
       }
-    }
-  )
+    })
+    
+    ### When clicking on download results button ###
+    output$single_download_results <- downloadHandler(
+      filename = function() {
+        paste("DNABarcodeCompatibility_result_", run_time, ".csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(final_result, file)
+      }
+    )
+    
+    ### When clicking on download log button ###
+    output$single_download_log <- downloadHandler(
+      filename = function() {
+        paste("DNABarcodeCompatibility_log_", run_time, ".txt", sep = "")
+      },
+      content = function(file) {
+        write(log, file)
+      }
+    )
   
   #######################
   #### DUAL INDEXING ####
@@ -329,8 +351,9 @@ server <- function(input, output, session) {
         output$dual_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
+        run_time <<- format(Sys.time())
         output$dual_table_result_error_message <- renderText("")
-        final_result = DNABarcodeCompatibility:::final_result_dual(
+        final_result <<- DNABarcodeCompatibility:::final_result_dual(
           isolate(dual_index_df1()[which(dual_index_df1()$valid==TRUE),]),
           isolate(dual_index_df2()[which(dual_index_df2()$valid==TRUE),]),
           isolate(dual_sample_number()),
@@ -366,8 +389,8 @@ server <- function(input, output, session) {
         log_text = paste(log_text, "--------------- Index 2 ---------------", "\n", sep="")
         log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
         ind2 <- mutate(dual_index_df2(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
-        log_text = paste(log_text, paste(ind2$out, collapse = "\n"), "\n", sep="")
-        output$dual_log <- renderText(log_text)
+        log <<- paste(log_text, paste(ind2$out, collapse = "\n"), "\n", sep="")
+        output$dual_log <- renderText(log)
         show("dual_download_log")
         
         #Remove running notification
@@ -375,6 +398,26 @@ server <- function(input, output, session) {
           removeNotification(notif_running)
           notif_running <<- NULL
         }
+        
+        ### When clicking on download results button ###
+        output$dual_download_results <- downloadHandler(
+          filename = function() {
+            paste("DNABarcodeCompatibility_result_", run_time, ".csv", sep = "")
+          },
+          content = function(file) {
+            write.csv(final_result, file)
+          }
+        )
+        
+        ### When clicking on download log button ###
+        output$dual_download_log <- downloadHandler(
+          filename = function() {
+            paste("DNABarcodeCompatibility_log_", run_time, ".txt", sep = "")
+          },
+          content = function(file) {
+            write(log, file)
+          }
+        )
       }
     }
   )
