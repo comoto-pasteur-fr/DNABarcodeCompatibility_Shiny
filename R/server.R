@@ -1,6 +1,7 @@
 library(shiny)
 library(stringr)
 library(DT)
+library(shinyjs)
 library(DNABarcodeCompatibility)
 source("html_output.R")
 
@@ -10,6 +11,14 @@ platformsVec <-
     "Illumina MiniSeq, NextSeq, NovaSeq" = 2,
     "Illumina MiSeq, HiSeq" = 4,
     "Other plaftorms" = 0
+  )
+
+distancesVec <-
+  c(
+    "Hamming" = "hamming",
+    "Seqlev" = "seqlev",
+    "Phaseshift" = "phaseshift",
+    "No distance" = "none"
   )
 
 update_valid_data <- function(df, gc_content_min, gc_content_max, remove_homopolymer) {
@@ -48,6 +57,8 @@ define_distance_metric <- function(metric){
 
 server <- function(input, output, session) {
   
+  notif_running <<- NULL
+  
   #########################
   #### SINGLE INDEXING ####
   #########################
@@ -78,6 +89,29 @@ server <- function(input, output, session) {
     }
   })
   
+  ### Handle when wrong input for distance parameter ###
+  observe({
+    distance <- as.numeric(single_distance())
+    if (distance < 0 || is.na(distance)){
+      output$single_distance_error_message <- renderText("Please enter a correct positive value")
+    }
+    else{
+      output$single_distance_error_message <- renderText("")
+    }
+  })
+  
+  ### Disable distance numeric input when "no distance" is chosen from distance metric ###
+  observeEvent(input$single_distance_metric, {
+    if (is.null(single_metric())) {
+      disable("single_distance")
+      updateNumericInput(session, "single_distance", value = 0)
+    }
+    else{
+      enable("single_distance")
+      updateNumericInput(session, "single_distance", value = 3)
+    }
+  })
+  
   ### Load input data when single file is uploaded ###
   observeEvent(input$single_file, {
     if (is.null(single_index_df())) {
@@ -85,21 +119,35 @@ server <- function(input, output, session) {
     }
     else{
       output$single_input_error_message <- renderText("")
-    }
-    output$single_loaded_data <-
-      renderDataTable(
-        datatable(single_index_df(), options = list(pageLength = 25)) %>% formatStyle(
-          'valid',
-          target = "row",
-          backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
+      output$single_loaded_data <-
+        renderDataTable(
+          datatable(single_index_df(), options = list(pageLength = 25)) %>% formatStyle(
+            'valid',
+            target = "row",
+            backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
         )
       )
+    }
   })
   
   ### When clicking on search button ###
   observeEvent(
     input$single_search, {
+      
+      #Reset outputs
+      output$single_table_result <- renderDataTable({ NULL })
+      hide("single_download_results")
+      output$single_visual_result <- renderText( NULL )
+      output$single_log <- renderText( NULL )
+      hide("single_download_log")
+      
+      #Show running notification
+      if (is.null(notif_running)){
+        notif_running <<- showNotification(type = "message", "Process running... ")
+      }
+      
       single_nb_sample <- as.numeric(single_sample_number())
+      single_dist <- as.numeric(single_distance())
       if (is.null(input$single_file)){
         output$single_table_result_error_message <- renderText("Please upload a file first")
       }
@@ -108,6 +156,9 @@ server <- function(input, output, session) {
       }
       else if (!DNABarcodeCompatibility:::sample_number_check(single_nb_sample)){
         output$single_table_result_error_message <- renderText("Please enter a valid sample number")
+      }
+      else if (single_dist < 0 || is.na(single_dist)){
+        output$single_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
         output$single_table_result_error_message <- renderText("")
@@ -119,9 +170,12 @@ server <- function(input, output, session) {
           isolate(single_metric()),
           isolate(single_distance())
         )
+        
         output$single_table_result <- renderDataTable({
            final_result
         })
+        updateTabsetPanel(session, "single_tabset", selected = "single_table_result")
+        show("single_download_results")
         
         output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
         #(display log only when execution is okay)
@@ -133,13 +187,21 @@ server <- function(input, output, session) {
         log_text = paste(log_text, "Multiplexing level: ", input$single_multiplex_level, "\n", sep="")
         log_text = paste(log_text, "GC content range (%): ", input$single_gc_content[1],"-", input$single_gc_content[2], "\n", sep="")
         log_text = paste(log_text, "Remove homopolymer: ", input$single_homopolymer, "\n", sep="")
-        log_text = paste(log_text, "Distance metric: ", input$single_distance_metric, "\n", sep="")
+        log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$single_distance_metric], "\n", sep="")
         log_text = paste(log_text, "Distance: ", input$single_distance, "\n", sep="")
         log_text = paste(log_text, "--------------- Index ---------------", "\n", sep="")
         log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
         ind <- mutate(single_index_df(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
         log_text = paste(log_text, paste(ind$out, collapse = "\n"), "\n", sep="")
         output$single_log <- renderText(log_text)
+        show("single_download_log")
+        
+        #Remove running notification
+        if (!is.null(notif_running)){
+          removeNotification(notif_running)
+          notif_running <<- NULL
+        }
+        
       }
     }
   )
@@ -175,6 +237,29 @@ server <- function(input, output, session) {
     }
   })
   
+  ### Handle when wrong input for distance parameter ###
+  observe({
+    distance <- as.numeric(dual_distance())
+    if (distance < 0 || is.na(distance)){
+      output$dual_distance_error_message <- renderText("Please enter a correct positive value")
+    }
+    else{
+      output$dual_distance_error_message <- renderText("")
+    }
+  })
+  
+  ### Disable distance numeric input when "no distance" is chosen from distance metric ###
+  observeEvent(input$dual_distance_metric, {
+    if (is.null(dual_metric())) {
+      disable("dual_distance")
+      updateNumericInput(session, "dual_distance", value = 0)
+    }
+    else{
+      enable("dual_distance")
+      updateNumericInput(session, "dual_distance", value = 3)
+    }
+  })
+  
   ### Load input data when dual file 1 is uploaded ###
   observeEvent(input$dual_file1, {
     if (is.null(dual_index_df1())) {
@@ -182,15 +267,15 @@ server <- function(input, output, session) {
     }
     else{
       output$dual_input_error_message1 <- renderText("")
-    }
-    output$dual_loaded_data1 <-
-      renderDataTable(
-        datatable(dual_index_df1(), options = list(pageLength = 25)) %>% formatStyle(
-          'valid',
-          target = "row",
-          backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
+      output$dual_loaded_data1 <-
+        renderDataTable(
+          datatable(dual_index_df1(), options = list(pageLength = 25)) %>% formatStyle(
+            'valid',
+            target = "row",
+            backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
         )
       )
+    }
     updateTabsetPanel(session, "dual_input_tab", selected = "file1")
   })
   
@@ -201,30 +286,47 @@ server <- function(input, output, session) {
     }
     else{
       output$dual_input_error_message2 <- renderText("")
-    }
-    output$dual_loaded_data2 <-
-      renderDataTable(
-        datatable(dual_index_df2(), options = list(pageLength = 25)) %>% formatStyle(
-          'valid',
-          target = "row",
-          backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
+      output$dual_loaded_data2 <-
+        renderDataTable(
+          datatable(dual_index_df2(), options = list(pageLength = 25)) %>% formatStyle(
+            'valid',
+            target = "row",
+            backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
+          )
         )
-      )
+    }
     updateTabsetPanel(session, "dual_input_tab", selected = "file2")
   })
   
   ### When clicking on search button ###
   observeEvent(
     input$dual_search, {
+      
+      #Reset outputs
+      output$dual_table_result <- renderDataTable({ NULL })
+      hide("dual_download_results")
+      output$dual_visual_result <- renderText( NULL )
+      output$dual_log <- renderText( NULL )
+      hide("dual_download_log")
+      
+      #Show running notification
+      if (is.null(notif_running)){
+        notif_running <<- showNotification(type = "message", "Process running... ")
+      }
+      
       dual_nb_sample <- as.numeric(dual_sample_number())
+      dual_dist <- as.numeric(dual_distance())
       if (is.null(input$dual_file1) || is.null(input$dual_file2)){
-        output$dual_table_result_error_message <- renderText("Please upload a file first")
+        output$dual_table_result_error_message <- renderText("Please upload the files first")
       }
       else if (is.null(dual_index_df1()) || is.null(dual_index_df2())){
-        output$single_table_result_error_message <- renderText("Please upload a valid file")
+        output$dual_table_result_error_message <- renderText("Please upload valid files")
       }
       else if (!DNABarcodeCompatibility:::sample_number_check(dual_nb_sample)){
         output$dual_table_result_error_message <- renderText("Please enter a valid sample number")
+      }
+      else if (dual_dist < 0 || is.na(dual_dist)){
+        output$dual_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
         output$dual_table_result_error_message <- renderText("")
@@ -237,9 +339,12 @@ server <- function(input, output, session) {
           isolate(dual_metric()),
           isolate(dual_distance())
         )
+        
         output$dual_table_result <- renderDataTable({
           final_result
         })
+        updateTabsetPanel(session, "dual_tabset", selected = "dual_table_result")
+        show("dual_download_results")
         
         output$dual_visual_result <- renderText(build_table_style_dual(final_result, isolate(dual_platform())))
         #(display log only when execution is okay)
@@ -247,12 +352,12 @@ server <- function(input, output, session) {
         log_text = paste(log_text, format(Sys.time()), "\n", sep="")
         log_text = paste(log_text, "File 1: ", input$dual_file1$name, "\n", sep="")
         log_text = paste(log_text, "File 2: ", input$dual_file2$name, "\n", sep="")
-        log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$single_platform], "\n", sep="")
+        log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$dual_platform], "\n", sep="")
         log_text = paste(log_text, "Sample number: ", input$dual_sample_number, "\n", sep="")
         log_text = paste(log_text, "Multiplexing level: ", input$dual_multiplex_level, "\n", sep="")
         log_text = paste(log_text, "GC content range (%): ", input$dual_gc_content[1],"-", input$dual_gc_content[2], "\n", sep="")
         log_text = paste(log_text, "Remove homopolymer: ", input$dual_homopolymer, "\n", sep="")
-        log_text = paste(log_text, "Distance metric: ", input$dual_distance_metric, "\n", sep="")
+        log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$dual_distance_metric], "\n", sep="")
         log_text = paste(log_text, "Distance: ", input$dual_distance, "\n", sep="")
         log_text = paste(log_text, "--------------- Index 1 ---------------", "\n", sep="")
         log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
@@ -263,6 +368,13 @@ server <- function(input, output, session) {
         ind2 <- mutate(dual_index_df2(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
         log_text = paste(log_text, paste(ind2$out, collapse = "\n"), "\n", sep="")
         output$dual_log <- renderText(log_text)
+        show("dual_download_log")
+        
+        #Remove running notification
+        if (!is.null(notif_running)){
+          removeNotification(notif_running)
+          notif_running <<- NULL
+        }
       }
     }
   )

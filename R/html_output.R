@@ -13,31 +13,31 @@ style = "margin-bottom : 50px; margin-top: 1000px;color : black; border: solid 2
 green = paste (style,"#99e7a9")
 yellow = paste (style,"#ffcf40")
 red = paste(style, "#f16a6a")
-blue = paste(style,"#0080ff")
+blue = paste(style,"#6BB8E7")
 blackish = paste(style, "#999999")
 
 
-# styles according to chemistry
-table_style = function(sequence_m, chemistry){
-  if (chemistry == 0){
+# styles according to platform
+table_style = function(sequence_m, platform){
+  if (platform == 0){
     style_sequence = sequence_m %>% 
       gsub("A",green, .)%>%
       gsub("C", blue, .)%>%
       gsub("T", red, .)%>%
       gsub("G", blackish, .) 
-   }else if (chemistry == 1){
+   }else if (platform == 1){
       style_sequence = sequence_m %>% 
         gsub("A",green, .)%>%
         gsub("C", red, .)%>%
         gsub("T", yellow, .)%>%
         gsub("G", blackish, .) 
-  }else if (chemistry == 2){
+  }else if (platform == 2){
     style_sequence = sequence_m %>% 
       gsub("A",yellow, .)%>%
       gsub("C", red, .)%>%
       gsub("T", green, .)%>%
       gsub("G", blackish, .) 
-  }else if (chemistry == 4){
+  }else if (platform == 4){
     style_sequence = sequence_m %>% 
       gsub("A|C", red, .)%>%
       gsub("G|T", green, .)
@@ -86,14 +86,14 @@ split_sequence = function(df_column){
 
 
 
-# The final output according to the type of chemistry
-build_table_style = function(result_df, chemistry){
+# The final output according to the type of platform
+build_table_style = function(result_df, platform){
   
   if(ncol(result_df) != 4 || 6){
     if(ncol(result_df) == 4){
-      return(build_table_style_single(result_df, chemistry))
+      return(build_table_style_single(result_df, platform))
     }else if (ncol(result_df == 6)){
-      return(build_table_style_dual(result_df, chemistry))
+      return(build_table_style_dual(result_df, platform))
     } 
   }else{
     return (NULL)
@@ -104,7 +104,7 @@ build_table_style = function(result_df, chemistry){
 
 
 # html_output for dual indexing
-build_table_style_dual = function(result_df, chemistry){
+build_table_style_dual = function(result_df, platform){
   
   nb_lane = as.numeric(result_df$Lane[nrow(result_df)])
   multiplexing_level = nrow(result_df)/nb_lane
@@ -117,7 +117,7 @@ build_table_style_dual = function(result_df, chemistry){
   nucleotide_m1 = split_sequence(result_df$sequence1)
   nucleotide_m2 = split_sequence(result_df$sequence2)
   general_style_m = matrix(general_style, nrow= nrow(result_m), ncol = 1) # sample column or Id column
-  css.cell = cbind(general_style_m, table_style(nucleotide_m1,chemistry), general_style_m, table_style(nucleotide_m2,chemistry), general_style_m)
+  css.cell = cbind(general_style_m, table_style(nucleotide_m1,platform), general_style_m, table_style(nucleotide_m2,platform), general_style_m)
   result_m = cbind(result_m[,"Id1"], nucleotide_m1, result_m[,"sample"], nucleotide_m2, result_m[,"Id2"])
   n.cgroup = c(1, ncol(nucleotide_m1), 1, ncol(nucleotide_m2), 1)
   result_m = htmlTable(result_m, 
@@ -137,7 +137,7 @@ build_table_style_dual = function(result_df, chemistry){
 
 
 # html_output for single indexing
-build_table_style_single = function(result_df, chemistry){
+build_table_style_single = function(result_df, platform){
   
   nb_lane = as.numeric(result_df$Lane[nrow(result_df)])
   multiplexing_level = nrow(result_df)/nb_lane
@@ -148,7 +148,7 @@ build_table_style_single = function(result_df, chemistry){
   result_m = as.matrix(result_df)
   nucleotide_m = split_sequence(result_df$sequence)
   general_style_m = matrix(general_style, nrow= nrow(result_m), ncol = 1) # sample column or Id column
-  css.cell = cbind(general_style_m, table_style(nucleotide_m,chemistry), general_style_m)
+  css.cell = cbind(general_style_m, table_style(nucleotide_m,platform), general_style_m)
   result_m = cbind(result_m[,"sample"], nucleotide_m, result_m[,"Id"])
   n.cgroup = c(1, ncol(nucleotide_m), 1)
   result_m = htmlTable(result_m, 

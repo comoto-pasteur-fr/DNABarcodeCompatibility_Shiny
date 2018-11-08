@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
+library(shinyjs)
 
 sidemenuWidth <- 300
 
@@ -67,7 +68,7 @@ body <- dashboardBody(
                   max = 1000
                 ),
                 conditionalPanel(
-                  "!is.numeric(input.single_sample_number) & input.single_sample_number>0",
+                  "!is.numeric(input.single_sample_number) || input.single_sample_number>0",
                   span(
                     textOutput(outputId = "single_sample_number_error_message"),
                     style = "color:red"
@@ -100,7 +101,15 @@ body <- dashboardBody(
                 numericInput(
                   inputId = "single_distance",
                   label = "Distance",
-                  value = 3
+                  value = 3,
+                  min = 0
+                ),
+                conditionalPanel(
+                  "!is.numeric(input.single_distance) || input.single_distance<0",
+                  span(
+                    textOutput(outputId = "single_distance_error_message"),
+                    style = "color:red"
+                  )
                 )
               ),
               tabBox(
@@ -109,19 +118,26 @@ body <- dashboardBody(
                 # The id lets us use input$tabset1 on the server to find the current tab
                 id = "single_tabset",
                 height = "250px",
-                tabPanel(
-                  "Table",
-                  value = "single_table_result",
-                  span(
-                    textOutput(outputId = "single_table_result_error_message"),
-                    style = "color:red"
-                  ),
-                  dataTableOutput(outputId = "single_table_result")
+                tabPanel("Table",
+                         value = "single_table_result",
+                         span(
+                          textOutput(outputId = "single_table_result_error_message"),
+                          style = "color:red"
+                         ),
+                         dataTableOutput(outputId = "single_table_result"),
+                         hidden(actionButton("single_download_results", icon = icon("download"), "Download results"))
                 ),
                 tabPanel("Visual",
                          value = "single_visual_result",
-                         htmlOutput(outputId = "single_visual_result")),
-                tabPanel("Log", value = "single_log", verbatimTextOutput(outputId = "single_log"))
+                         htmlOutput(outputId = "single_visual_result")
+                ),
+                tabPanel("Log",
+                         value = "single_log",
+                         verbatimTextOutput(
+                           outputId = "single_log"
+                         ),
+                         hidden(actionButton("single_download_log", icon = icon("download"), "Download log"))
+                )
               )
             ),
             fluidRow(
@@ -204,7 +220,15 @@ body <- dashboardBody(
                 numericInput(
                   inputId = "dual_distance",
                   label = "Distance",
-                  value = 3
+                  value = 3,
+                  min = 0
+                ),
+                conditionalPanel(
+                  "!is.numeric(input.dual_distance) || input.dual_distance<0",
+                  span(
+                    textOutput(outputId = "dual_distance_error_message"),
+                    style = "color:red"
+                  )
                 )
               ),
               tabBox(
@@ -220,12 +244,18 @@ body <- dashboardBody(
                     textOutput(outputId = "dual_table_result_error_message"),
                     style = "color:red"
                   ),
-                  dataTableOutput(outputId = "dual_table_result")
+                  dataTableOutput(outputId = "dual_table_result"),
+                  hidden(actionButton("dual_download_results", icon = icon("download"), "Download results"))
                 ),
                 tabPanel("Visual",
                          value = "dual_visual_result",
                          htmlOutput(outputId = "dual_visual_result")),
-                tabPanel("Log", value = "dual_log", verbatimTextOutput(outputId = "dual_log"))
+                tabPanel("Log",
+                         value = "dual_log",
+                         verbatimTextOutput(outputId = "dual_log"),
+                         hidden(
+                           actionButton("dual_download_log", icon = icon("download"), "Download log")
+                         ))
               )
             ),
             fluidRow(
@@ -262,6 +292,7 @@ body <- dashboardBody(
 
 ui <- fluidPage(
   
+  useShinyjs(),
   dashboardPage(
     dashboardHeader(title = "DNABarcodeCompatibility", titleWidth = sidemenuWidth),
     sidebar,
