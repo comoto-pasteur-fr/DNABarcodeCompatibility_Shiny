@@ -144,11 +144,6 @@ server <- function(input, output, session) {
       output$single_log <- renderText( NULL )
       hide("single_download_log")
       
-      #Show running notification
-      if (is.null(notif_running)){
-        notif_running <<- showNotification(type = "message", "Process running... ")
-      }
-      
       single_nb_sample <- as.numeric(single_sample_number())
       single_dist <- as.numeric(single_distance())
       if (is.null(input$single_file)){
@@ -164,6 +159,11 @@ server <- function(input, output, session) {
         output$single_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
+        #Show running notification
+        if (is.null(notif_running)){
+          notif_running <<- showNotification(type = "message", "Process running... ")
+        }
+        
         run_time <<- format(Sys.time())
         output$single_table_result_error_message <- renderText("")
         final_result <<- DNABarcodeCompatibility:::final_result(
@@ -182,7 +182,6 @@ server <- function(input, output, session) {
         show("single_download_results")
         
         output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
-        #(display log only when execution is okay)
         log_text = ""
         log_text = paste(log_text, run_time, "\n", sep="")
         log_text = paste(log_text, "File: ", input$single_file$name, "\n", sep="")
@@ -331,11 +330,6 @@ server <- function(input, output, session) {
       output$dual_log <- renderText( NULL )
       hide("dual_download_log")
       
-      #Show running notification
-      if (is.null(notif_running)){
-        notif_running <<- showNotification(type = "message", "Process running... ")
-      }
-      
       dual_nb_sample <- as.numeric(dual_sample_number())
       dual_dist <- as.numeric(dual_distance())
       if (is.null(input$dual_file1) || is.null(input$dual_file2)){
@@ -351,6 +345,10 @@ server <- function(input, output, session) {
         output$dual_table_result_error_message <- renderText("Please enter a valid distance")
       }
       else{
+        #Show running notification
+        if (is.null(notif_running)){
+          notif_running <<- showNotification(type = "message", "Process running... ")
+        }
         run_time <<- format(Sys.time())
         output$dual_table_result_error_message <- renderText("")
         final_result <<- DNABarcodeCompatibility:::final_result_dual(
@@ -370,7 +368,6 @@ server <- function(input, output, session) {
         show("dual_download_results")
         
         output$dual_visual_result <- renderText(build_table_style_dual(final_result, isolate(dual_platform())))
-        #(display log only when execution is okay)
         log_text = ""
         log_text = paste(log_text, format(Sys.time()), "\n", sep="")
         log_text = paste(log_text, "File 1: ", input$dual_file1$name, "\n", sep="")
