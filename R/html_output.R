@@ -5,52 +5,20 @@
 library('htmlTable')
 library("dplyr")
 
+# The styles and format to apply to the result table ----------------------
 
-
-
-### The styles and format to apply to the result table
 style = "margin-bottom : 50px; margin-top: 1000px;color : black; border: solid 2px black; border-collapse: collapse; heigt : 30px; width : 50px; background-color:"
 green = paste (style,"#99e7a9")
 yellow = paste (style,"#ffcf40")
 red = paste(style, "#f16a6a")
 blue = paste(style,"#6BB8E7")
 blackish = paste(style, "#999999")
-
-
-# styles according to platform
-table_style = function(sequence_m, platform){
-  if (platform == 0){
-    style_sequence = sequence_m %>% 
-      gsub("A",green, .)%>%
-      gsub("C", blue, .)%>%
-      gsub("T", red, .)%>%
-      gsub("G", blackish, .) 
-   }else if (platform == 1){
-      style_sequence = sequence_m %>% 
-        gsub("A",green, .)%>%
-        gsub("C", red, .)%>%
-        gsub("T", yellow, .)%>%
-        gsub("G", blackish, .) 
-  }else if (platform == 2){
-    style_sequence = sequence_m %>% 
-      gsub("A",yellow, .)%>%
-      gsub("C", red, .)%>%
-      gsub("T", green, .)%>%
-      gsub("G", blackish, .) 
-  }else if (platform == 4){
-    style_sequence = sequence_m %>% 
-      gsub("A|C", red, .)%>%
-      gsub("G|T", green, .)
-  }
-  return(style_sequence)
-}
-
-
 general_style = "text-align:center;
 background-color: white;
 color : black; 
 font-family : verdana; font-size : 90%;
 padding: 5px 20px 5px 20px;"
+
 cgroup_style = "text-align:center;
 background-color: white;
 color : black;
@@ -70,6 +38,38 @@ font-style : oblique;
 padding-top : 20px;"
 
 
+# The functions -----------------------------------------------------------
+
+
+# styles according to platform
+table_style = function(sequence_m, platform){
+  if (platform == 0){
+    style_sequence = sequence_m %>% 
+      gsub("A",green, .)%>%
+      gsub("C", blue, .)%>%
+      gsub("T", red, .)%>%
+      gsub("G", blackish, .) 
+  }else if (platform == 1){
+    style_sequence = sequence_m %>% 
+      gsub("A",green, .)%>%
+      gsub("C", red, .)%>%
+      gsub("T", yellow, .)%>%
+      gsub("G", blackish, .) 
+  }else if (platform == 2){
+    style_sequence = sequence_m %>% 
+      gsub("A",yellow, .)%>%
+      gsub("C", red, .)%>%
+      gsub("T", green, .)%>%
+      gsub("G", blackish, .) 
+  }else if (platform == 4){
+    style_sequence = sequence_m %>% 
+      gsub("A|C", red, .)%>%
+      gsub("G|T", green, .)
+  }
+  return(style_sequence)
+}
+
+
 
 
 
@@ -83,12 +83,8 @@ split_sequence = function(df_column){
 }
 
 
-
-
-
 # The final output according to the type of platform
 build_table_style = function(result_df, platform){
-  
   if(ncol(result_df) != 4 || 6){
     if(ncol(result_df) == 4){
       return(build_table_style_single(result_df, platform))
@@ -100,17 +96,13 @@ build_table_style = function(result_df, platform){
   }
 }
 
-# nb_lane = 4
-
 
 # html_output for dual indexing
 build_table_style_dual = function(result_df, platform){
-  
   nb_lane = as.numeric(result_df$Lane[nrow(result_df)])
   multiplexing_level = nrow(result_df)/nb_lane
   rgroup = paste("Lane", as.character(c(1: nb_lane)))
   n.rgroup = c(rep(multiplexing_level,nb_lane))
-  
   cgroup = c("Id1", "Sequence 1", "Sample", "Sequence 2", "Id2")
   css.cgroup = rep(cgroup_style,5)
   result_m = as.matrix(result_df)
