@@ -7,12 +7,21 @@ library("dplyr")
 
 # The styles and format to apply to the result table ----------------------
 
-style = "margin-bottom : 50px; margin-top: 1000px;color : black; border: solid 2px black; border-collapse: collapse; heigt : 30px; width : 50px; background-color:"
+# nucleotide
+style = "margin-bottom : 50px;
+margin-top: 1000px;color : black;
+border: solid 2px black;
+border-collapse: collapse; 
+heigt : 30px; width : 50px;
+background-color:"
+
 green = paste (style,"#99e7a9")
 yellow = paste (style,"#ffcf40")
 red = paste(style, "#f16a6a")
 blue = paste(style,"#6BB8E7")
 blackish = paste(style, "#999999")
+
+# sample column or Id column
 general_style = "text-align:center;
 background-color: white;
 color : black; 
@@ -27,7 +36,6 @@ border-bottom : 2px solid white;
 padding : 5px 5px 20px 5px;
 font-family : verdana;
 border-collapse : collapse;"
-
 
 css.cgroup = c(cgroup_style, cgroup_style, cgroup_style)
 css.rgroup.sep = "border-bottom : 2px solid black;"
@@ -108,10 +116,18 @@ build_table_style_dual = function(result_df, platform){
   result_m = as.matrix(result_df)
   nucleotide_m1 = split_sequence(result_df$sequence1)
   nucleotide_m2 = split_sequence(result_df$sequence2)
-  general_style_m = matrix(general_style, nrow= nrow(result_m), ncol = 1) # sample column or Id column
-  css.cell = cbind(general_style_m, table_style(nucleotide_m1,platform), general_style_m, table_style(nucleotide_m2,platform), general_style_m)
-  result_m = cbind(result_m[,"Id1"], nucleotide_m1, result_m[,"sample"], nucleotide_m2, result_m[,"Id2"])
-  n.cgroup = c(1, ncol(nucleotide_m1), 1, ncol(nucleotide_m2), 1)
+  general_style_m = matrix(general_style,
+                           nrow= nrow(result_m), ncol = 1) 
+  css.cell = cbind(general_style_m,
+                   table_style(nucleotide_m1,platform),
+                   general_style_m,
+                   table_style(nucleotide_m2,platform),
+                   general_style_m)
+  result_m = cbind(result_m[,"Id1"],
+                   nucleotide_m1, result_m[,"sample"],
+                   nucleotide_m2, result_m[,"Id2"])
+  n.cgroup = c(1, ncol(nucleotide_m1), 1,
+               ncol(nucleotide_m2), 1)
   result_m = htmlTable(result_m, 
                        cgroup = cgroup,
                        n.cgroup = n.cgroup,
@@ -126,21 +142,21 @@ build_table_style_dual = function(result_df, platform){
 }
 
 
-
-
 # html_output for single indexing
 build_table_style_single = function(result_df, platform){
-  
   nb_lane = as.numeric(result_df$Lane[nrow(result_df)])
   multiplexing_level = nrow(result_df)/nb_lane
   rgroup = paste("Lane", as.character(c(1: nb_lane)))
   n.rgroup = c(rep(multiplexing_level,nb_lane))
-  
   cgroup = c("Sample", "Sequence", "Id")
   result_m = as.matrix(result_df)
   nucleotide_m = split_sequence(result_df$sequence)
-  general_style_m = matrix(general_style, nrow= nrow(result_m), ncol = 1) # sample column or Id column
-  css.cell = cbind(general_style_m, table_style(nucleotide_m,platform), general_style_m)
+  general_style_m = matrix(general_style,
+                           nrow= nrow(result_m),
+                           ncol = 1) 
+  css.cell = cbind(general_style_m,
+                   table_style(nucleotide_m,platform),
+                   general_style_m)
   result_m = cbind(result_m[,"sample"], nucleotide_m, result_m[,"Id"])
   n.cgroup = c(1, ncol(nucleotide_m), 1)
   result_m = htmlTable(result_m, 
