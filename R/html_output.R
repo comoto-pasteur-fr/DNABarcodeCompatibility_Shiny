@@ -49,6 +49,7 @@ padding-top : 20px;"
 # The functions -----------------------------------------------------------
 
 
+
 # styles according to platform
 table_style = function(sequence_m, platform){
   if (platform == 0){
