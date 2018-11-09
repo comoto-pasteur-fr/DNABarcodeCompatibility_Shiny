@@ -7,7 +7,7 @@ proxy:
   - id: 01_DNABarcodeCompatibility
     display-name: DNABarcodeCompatibility
     description: Shiny interface for DNABarcodeCompatibility
-    container-cmd: ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_ShinyApp')"]
+    container-cmd: ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_Shiny')"]
     container-image: etournay/dna_barcode_compatibility_shiny
     container-network: sp-example-net
 
