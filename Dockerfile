@@ -30,4 +30,4 @@ COPY Rprofile.site /usr/lib/R/etc/
 
 EXPOSE 3838
 
-CMD ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_ShinyApp')"]
+CMD ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_Shiny')"]
