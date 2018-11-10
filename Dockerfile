@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     libssl1.0.0
 
 # basic shiny functionality
-RUN R -e "install.packages(c('shiny', 'rmarkdown', 'shinydashboard', 'htmlTable'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(c('shiny', 'rmarkdown', 'shinydashboard', 'htmlTable', 'stringr', 'DT', 'shinyjs'), repos='https://cran.rstudio.com/')"
 
 # install dependencies of the DNABarcodeCompatibility app
 RUN R -e "install.packages('devtools', repos='https://cran.rstudio.com/')"
@@ -23,11 +23,11 @@ RUN R -e "install.packages('DNABarcodes', repos='https://bioconductor.org/packag
 RUN R -e "devtools::install_github('comoto-pasteur-fr/DNABarcodeCompatibility', ref='revision')"
 
 # copy the app to the image
-RUN mkdir /root/DNABarcodeCompatibility_Shiny
-COPY R /root/DNABarcodeCompatibility_Shiny
+RUN mkdir /root/DNABarcodeCompatibility_ShinyApp
+COPY R /root/DNABarcodeCompatibility_ShinyApp
 
 COPY Rprofile.site /usr/lib/R/etc/
 
 EXPOSE 3838
 
-CMD ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_Shiny')"]
+CMD ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_ShinyApp')"]
