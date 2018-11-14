@@ -96,7 +96,7 @@ body <- dashboardBody(
                 selectInput(
                   inputId = "single_distance_metric",
                   label = "Distance metric",
-                  choices = c("Hamming" = "hamming", "Seqlev" = "seqlev", "Phaseshift" = "phaseshift", "No distance" = "none")
+                  choices = c("No distance" = "none", "Hamming" = "hamming", "Seqlev" = "seqlev", "Phaseshift" = "phaseshift")
                 ),
                 numericInput(
                   inputId = "single_distance",
@@ -223,7 +223,7 @@ body <- dashboardBody(
                 selectInput(
                   inputId = "dual_distance_metric",
                   label = "Distance metric",
-                  choices = c("Hamming" = "hamming", "Seqlev" = "seqlev", "Phaseshift" = "phaseshift", "No distance" = "none")
+                  choices = c("No distance" = "none", "Hamming" = "hamming", "Seqlev" = "seqlev", "Phaseshift" = "phaseshift")
                 ),
                 numericInput(
                   inputId = "dual_distance",
