@@ -189,9 +189,9 @@ server <- function(input, output, session) {
           output$single_table_result <- renderDataTable({
              final_result
           })
-          updateTabsetPanel(session, "single_tabset", selected = "single_table_result")
           show("single_download_results")
           
+          updateTabsetPanel(session, "single_tabset", selected = "single_visual_result")
           output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
           log_text = ""
           log_text = paste(log_text, run_time, "\n", sep="")
@@ -392,9 +392,9 @@ server <- function(input, output, session) {
           output$dual_table_result <- renderDataTable({
             final_result
           })
-          updateTabsetPanel(session, "dual_tabset", selected = "dual_table_result")
           show("dual_download_results")
           
+          updateTabsetPanel(session, "dual_tabset", selected = "dual_visual_result")
           output$dual_visual_result <- renderText(build_table_style_dual(final_result, isolate(dual_platform())))
           log_text = ""
           log_text = paste(log_text, format(Sys.time()), "\n", sep="")

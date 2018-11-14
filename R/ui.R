@@ -118,6 +118,14 @@ body <- dashboardBody(
                 # The id lets us use input$tabset1 on the server to find the current tab
                 id = "single_tabset",
                 height = "250px",
+                tabPanel("Visual",
+                         value = "single_visual_result",
+                         span(
+                           textOutput(outputId = "single_visual_result_error_message"),
+                           style = "color:red"
+                         ),
+                         htmlOutput(outputId = "single_visual_result")
+                ),
                 tabPanel("Table",
                          value = "single_table_result",
                          span(
@@ -126,14 +134,6 @@ body <- dashboardBody(
                          ),
                          dataTableOutput(outputId = "single_table_result"),
                          hidden(downloadButton("single_download_results", "Download results"))
-                ),
-                tabPanel("Visual",
-                         value = "single_visual_result",
-                         span(
-                           textOutput(outputId = "single_visual_result_error_message"),
-                           style = "color:red"
-                         ),
-                         htmlOutput(outputId = "single_visual_result")
                 ),
                 tabPanel("Log",
                          value = "single_log",
@@ -245,6 +245,13 @@ body <- dashboardBody(
                 # The id lets us use input$tabset1 on the server to find the current tab
                 id = "dual_tabset",
                 height = "250px",
+                tabPanel("Visual",
+                         value = "dual_visual_result",
+                         span(
+                           textOutput(outputId = "dual_visual_result_error_message"),
+                           style = "color:red"
+                         ),
+                         htmlOutput(outputId = "dual_visual_result")),
                 tabPanel(
                   "Table",
                   value = "dual_table_result",
@@ -255,13 +262,6 @@ body <- dashboardBody(
                   dataTableOutput(outputId = "dual_table_result"),
                   hidden(downloadButton("dual_download_results", "Download results"))
                 ),
-                tabPanel("Visual",
-                         value = "dual_visual_result",
-                         span(
-                           textOutput(outputId = "dual_visual_result_error_message"),
-                           style = "color:red"
-                         ),
-                         htmlOutput(outputId = "dual_visual_result")),
                 tabPanel("Log",
                          value = "dual_log",
                          span(
