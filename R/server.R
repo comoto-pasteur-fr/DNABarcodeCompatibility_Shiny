@@ -119,6 +119,7 @@ server <- function(input, output, session) {
   observeEvent(input$single_file, {
     if (is.null(single_index_df())) {
       output$single_input_error_message <- renderText(paste("Error loading file : ", error_message))
+      output$single_loaded_data <- renderDataTable( NULL )
     }
     else{
       output$single_input_error_message <- renderText("")
@@ -302,6 +303,7 @@ server <- function(input, output, session) {
   observeEvent(input$dual_file1, {
     if (is.null(dual_index_df1())) {
       output$dual_input_error_message1 <- renderText(paste("Error loading file : ", error_message))
+      output$dual_loaded_data1 <- renderDataTable( NULL )
     }
     else{
       output$dual_input_error_message1 <- renderText("")
@@ -321,6 +323,7 @@ server <- function(input, output, session) {
   observeEvent(input$dual_file2, {
     if (is.null(dual_index_df2())) {
       output$dual_input_error_message2 <- renderText(paste("Error loading file : ", error_message))
+      output$dual_loaded_data2 <- renderDataTable( NULL )
     }
     else{
       output$dual_input_error_message2 <- renderText("")
