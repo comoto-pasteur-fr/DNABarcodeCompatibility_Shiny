@@ -39,7 +39,7 @@ runGitHub("comoto-pasteur-fr/DNABarcodeCompatibility_Shiny", subdir="R", launch.
 ```
 # In a shell console type in the following commands
 docker pull etournay/dna_barcode_compatibility_shiny
-docker run --name barcode_shiny -d -p 8080:3838 etournay/dna_barcode_compatibility_shiny
+docker create --name barcode_shiny -d -p 8080:3838 etournay/dna_barcode_compatibility_shiny
 ```
 
 * Start and stop the Shiny App
