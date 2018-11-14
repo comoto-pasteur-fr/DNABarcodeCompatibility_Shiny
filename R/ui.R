@@ -27,7 +27,7 @@ body <- dashboardBody(
     tabItem(tabName = "home",
             h2("DNABarcodeCompatibility: to find least-redundant sets of compatible barcodes for multiplex experiments performed on next generation sequencing platforms."),
             h3("Description"),
-            p("The DNABarcodeCompatibility package provides six functions to load DNA barcodes, and to generate, filter and optimize sets of barcode combinations for multiplex sequecing experiments. In particular, barcode combinations are selected to be compatible with respect to Illumina chemistry constraints, and can be filtered to keep those that are robust against substitution and insertion/deletion errors thereby facilitating the demultiplexing step. In addtion, the package provides an optimizer function to further favor the selection of compatible barcode combinations with least redundancy of DNA barcodes."),
+            p("The current Shiny-web interface is a front end for the DNABarcodeCompatibility package. This package provides tools to load DNA barcodes, and to generate, filter and optimize sets of barcode combinations for multiplex sequencing experiments. In particular, barcode combinations are selected to be compatible with respect to Illumina chemistry constraints, and can be filtered to keep those that are robust against substitution and insertion/deletion errors thereby facilitating the demultiplexing step. In addition, the package provides an optimizer function to further favor the selection of compatible barcode combinations with least redundancy of DNA barcodes."),
             h3("How to cite"),
             p("Céline Trébeau, Jacques Boutet de Monvel, Fabienne Wong Jun Tai, Raphaël Etournay. (2018, May 31). comoto-pasteur-fr/DNABarcodeCompatibility: First complete release (Version v0.0.0.9000). Zenodo.")
     ),
@@ -129,10 +129,18 @@ body <- dashboardBody(
                 ),
                 tabPanel("Visual",
                          value = "single_visual_result",
+                         span(
+                           textOutput(outputId = "single_visual_result_error_message"),
+                           style = "color:red"
+                         ),
                          htmlOutput(outputId = "single_visual_result")
                 ),
                 tabPanel("Log",
                          value = "single_log",
+                         span(
+                           textOutput(outputId = "single_log_error_message"),
+                           style = "color:red"
+                         ),
                          verbatimTextOutput(
                            outputId = "single_log"
                          ),
@@ -249,9 +257,17 @@ body <- dashboardBody(
                 ),
                 tabPanel("Visual",
                          value = "dual_visual_result",
+                         span(
+                           textOutput(outputId = "dual_visual_result_error_message"),
+                           style = "color:red"
+                         ),
                          htmlOutput(outputId = "dual_visual_result")),
                 tabPanel("Log",
                          value = "dual_log",
+                         span(
+                           textOutput(outputId = "dual_log_error_message"),
+                           style = "color:red"
+                         ),
                          verbatimTextOutput(outputId = "dual_log"),
                          hidden(
                            downloadButton("dual_download_log", "Download log")

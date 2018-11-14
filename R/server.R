@@ -148,15 +148,23 @@ server <- function(input, output, session) {
       single_dist <- as.numeric(single_distance())
       if (is.null(input$single_file)){
         output$single_table_result_error_message <- renderText("Please upload a file first")
+        output$single_visual_result_error_message <- renderText("Please upload a file first")
+        output$single_log_error_message <- renderText("Please upload a file first")
       }
       else if (is.null(single_index_df())){
         output$single_table_result_error_message <- renderText("Please upload a valid file")
+        output$single_visual_result_error_message <- renderText("Please upload a valid file")
+        output$single_log_error_message <- renderText("Please upload a valid file")
       }
       else if (!DNABarcodeCompatibility:::sample_number_check(single_nb_sample)){
         output$single_table_result_error_message <- renderText("Please enter a valid sample number")
+        output$single_visual_result_error_message <- renderText("Please enter a valid sample number")
+        output$single_log_error_message <- renderText("Please enter a valid sample number")
       }
       else if (single_dist < 0 || is.na(single_dist)){
         output$single_table_result_error_message <- renderText("Please enter a valid distance")
+        output$single_visual_result_error_message <- renderText("Please enter a valid distance")
+        output$single_log_error_message <- renderText("Please enter a valid distance")
       }
       else{
         #Show running notification
@@ -166,6 +174,8 @@ server <- function(input, output, session) {
         
         run_time <<- format(Sys.time())
         output$single_table_result_error_message <- renderText("")
+        output$single_visual_result_error_message <- renderText("")
+        output$single_log_error_message <- renderText("")
         final_result <<- DNABarcodeCompatibility:::final_result(
           isolate(single_index_df()[which(single_index_df()$valid==TRUE),]),
           isolate(single_sample_number()),
@@ -175,29 +185,36 @@ server <- function(input, output, session) {
           isolate(single_distance())
         )
         
-        output$single_table_result <- renderDataTable({
-           final_result
-        })
-        updateTabsetPanel(session, "single_tabset", selected = "single_table_result")
-        show("single_download_results")
-        
-        output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
-        log_text = ""
-        log_text = paste(log_text, run_time, "\n", sep="")
-        log_text = paste(log_text, "File: ", input$single_file$name, "\n", sep="")
-        log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$single_platform], "\n", sep="")
-        log_text = paste(log_text, "Sample number: ", input$single_sample_number, "\n", sep="")
-        log_text = paste(log_text, "Multiplexing level: ", input$single_multiplex_level, "\n", sep="")
-        log_text = paste(log_text, "GC content range (%): ", input$single_gc_content[1],"-", input$single_gc_content[2], "\n", sep="")
-        log_text = paste(log_text, "Remove homopolymer: ", input$single_homopolymer, "\n", sep="")
-        log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$single_distance_metric], "\n", sep="")
-        log_text = paste(log_text, "Distance: ", input$single_distance, "\n", sep="")
-        log_text = paste(log_text, "--------------- Index ---------------", "\n", sep="")
-        log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
-        ind <- mutate(single_index_df(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
-        log <<- paste(log_text, paste(ind$out, collapse = "\n"), "\n", sep="")
-        output$single_log <- renderText(log)
-        show("single_download_log")
+        if (!is.null(final_result)){
+          output$single_table_result <- renderDataTable({
+             final_result
+          })
+          updateTabsetPanel(session, "single_tabset", selected = "single_table_result")
+          show("single_download_results")
+          
+          output$single_visual_result <- renderText(build_table_style(final_result, isolate(single_platform())))
+          log_text = ""
+          log_text = paste(log_text, run_time, "\n", sep="")
+          log_text = paste(log_text, "File: ", input$single_file$name, "\n", sep="")
+          log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$single_platform], "\n", sep="")
+          log_text = paste(log_text, "Sample number: ", input$single_sample_number, "\n", sep="")
+          log_text = paste(log_text, "Multiplexing level: ", input$single_multiplex_level, "\n", sep="")
+          log_text = paste(log_text, "GC content range (%): ", input$single_gc_content[1],"-", input$single_gc_content[2], "\n", sep="")
+          log_text = paste(log_text, "Remove homopolymer: ", input$single_homopolymer, "\n", sep="")
+          log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$single_distance_metric], "\n", sep="")
+          log_text = paste(log_text, "Distance: ", input$single_distance, "\n", sep="")
+          log_text = paste(log_text, "--------------- Index ---------------", "\n", sep="")
+          log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
+          ind <- mutate(single_index_df(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
+          log <<- paste(log_text, paste(ind$out, collapse = "\n"), "\n", sep="")
+          output$single_log <- renderText(log)
+          show("single_download_log")
+        }
+        else{
+          output$single_table_result_error_message <- renderText(error_message)
+          output$single_visual_result_error_message <- renderText(error_message)
+          output$single_log_error_message <- renderText(error_message)
+        }
         
         #Remove running notification
         if (!is.null(notif_running)){
@@ -334,15 +351,23 @@ server <- function(input, output, session) {
       dual_dist <- as.numeric(dual_distance())
       if (is.null(input$dual_file1) || is.null(input$dual_file2)){
         output$dual_table_result_error_message <- renderText("Please upload the files first")
+        output$dual_visual_result_error_message <- renderText("Please upload the files first")
+        output$dual_log_error_message <- renderText("Please upload the files first")
       }
       else if (is.null(dual_index_df1()) || is.null(dual_index_df2())){
         output$dual_table_result_error_message <- renderText("Please upload valid files")
+        output$dual_visual_result_error_message <- renderText("Please upload valid files")
+        output$dual_log_error_message <- renderText("Please upload valid files")
       }
       else if (!DNABarcodeCompatibility:::sample_number_check(dual_nb_sample)){
         output$dual_table_result_error_message <- renderText("Please enter a valid sample number")
+        output$dual_visual_result_error_message <- renderText("Please enter a valid sample number")
+        output$dual_log_error_message <- renderText("Please enter a valid sample number")
       }
       else if (dual_dist < 0 || is.na(dual_dist)){
         output$dual_table_result_error_message <- renderText("Please enter a valid distance")
+        output$dual_visual_result_error_message <- renderText("Please enter a valid distance")
+        output$dual_log_error_message <- renderText("Please enter a valid distance")
       }
       else{
         #Show running notification
@@ -351,6 +376,8 @@ server <- function(input, output, session) {
         }
         run_time <<- format(Sys.time())
         output$dual_table_result_error_message <- renderText("")
+        output$dual_visual_result_error_message <- renderText("")
+        output$dual_log_error_message <- renderText("")
         final_result <<- DNABarcodeCompatibility:::final_result_dual(
           isolate(dual_index_df1()[which(dual_index_df1()$valid==TRUE),]),
           isolate(dual_index_df2()[which(dual_index_df2()$valid==TRUE),]),
@@ -361,34 +388,41 @@ server <- function(input, output, session) {
           isolate(dual_distance())
         )
         
-        output$dual_table_result <- renderDataTable({
-          final_result
-        })
-        updateTabsetPanel(session, "dual_tabset", selected = "dual_table_result")
-        show("dual_download_results")
-        
-        output$dual_visual_result <- renderText(build_table_style_dual(final_result, isolate(dual_platform())))
-        log_text = ""
-        log_text = paste(log_text, format(Sys.time()), "\n", sep="")
-        log_text = paste(log_text, "File 1: ", input$dual_file1$name, "\n", sep="")
-        log_text = paste(log_text, "File 2: ", input$dual_file2$name, "\n", sep="")
-        log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$dual_platform], "\n", sep="")
-        log_text = paste(log_text, "Sample number: ", input$dual_sample_number, "\n", sep="")
-        log_text = paste(log_text, "Multiplexing level: ", input$dual_multiplex_level, "\n", sep="")
-        log_text = paste(log_text, "GC content range (%): ", input$dual_gc_content[1],"-", input$dual_gc_content[2], "\n", sep="")
-        log_text = paste(log_text, "Remove homopolymer: ", input$dual_homopolymer, "\n", sep="")
-        log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$dual_distance_metric], "\n", sep="")
-        log_text = paste(log_text, "Distance: ", input$dual_distance, "\n", sep="")
-        log_text = paste(log_text, "--------------- Index 1 ---------------", "\n", sep="")
-        log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
-        ind1 <- mutate(dual_index_df1(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
-        log_text = paste(log_text, paste(ind1$out, collapse = "\n"), "\n", sep="")
-        log_text = paste(log_text, "--------------- Index 2 ---------------", "\n", sep="")
-        log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
-        ind2 <- mutate(dual_index_df2(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
-        log <<- paste(log_text, paste(ind2$out, collapse = "\n"), "\n", sep="")
-        output$dual_log <- renderText(log)
-        show("dual_download_log")
+        if (!is.null(final_result)){
+          output$dual_table_result <- renderDataTable({
+            final_result
+          })
+          updateTabsetPanel(session, "dual_tabset", selected = "dual_table_result")
+          show("dual_download_results")
+          
+          output$dual_visual_result <- renderText(build_table_style_dual(final_result, isolate(dual_platform())))
+          log_text = ""
+          log_text = paste(log_text, format(Sys.time()), "\n", sep="")
+          log_text = paste(log_text, "File 1: ", input$dual_file1$name, "\n", sep="")
+          log_text = paste(log_text, "File 2: ", input$dual_file2$name, "\n", sep="")
+          log_text = paste(log_text, "Platform: ", names(platformsVec)[platformsVec == input$dual_platform], "\n", sep="")
+          log_text = paste(log_text, "Sample number: ", input$dual_sample_number, "\n", sep="")
+          log_text = paste(log_text, "Multiplexing level: ", input$dual_multiplex_level, "\n", sep="")
+          log_text = paste(log_text, "GC content range (%): ", input$dual_gc_content[1],"-", input$dual_gc_content[2], "\n", sep="")
+          log_text = paste(log_text, "Remove homopolymer: ", input$dual_homopolymer, "\n", sep="")
+          log_text = paste(log_text, "Distance metric: ", names(distancesVec)[distancesVec == input$dual_distance_metric], "\n", sep="")
+          log_text = paste(log_text, "Distance: ", input$dual_distance, "\n", sep="")
+          log_text = paste(log_text, "--------------- Index 1 ---------------", "\n", sep="")
+          log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
+          ind1 <- mutate(dual_index_df1(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
+          log_text = paste(log_text, paste(ind1$out, collapse = "\n"), "\n", sep="")
+          log_text = paste(log_text, "--------------- Index 2 ---------------", "\n", sep="")
+          log_text = paste(log_text, "Id\tSequence\tGC_content\tHomopolymer\tvalid", "\n", sep="")
+          ind2 <- mutate(dual_index_df2(), out = paste(Id, sequence, GC_content, homopolymer, valid, sep = '\t'))
+          log <<- paste(log_text, paste(ind2$out, collapse = "\n"), "\n", sep="")
+          output$dual_log <- renderText(log)
+          show("dual_download_log")
+        }
+        else{
+          output$dual_table_result_error_message <- renderText(error_message)
+          output$dual_visual_result_error_message <- renderText(error_message)
+          output$dual_log_error_message <- renderText(error_message)
+        }
         
         #Remove running notification
         if (!is.null(notif_running)){
