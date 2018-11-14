@@ -21,6 +21,8 @@ RUN R -e "install.packages(c('shiny', 'rmarkdown', 'shinydashboard', 'htmlTable'
 RUN R -e "install.packages('devtools', repos='https://cran.rstudio.com/')"
 RUN R -e "install.packages('DNABarcodes', repos='https://bioconductor.org/packages/3.7/bioc')"
 RUN R -e "devtools::install_github('comoto-pasteur-fr/DNABarcodeCompatibility', ref='revision')"
+#RUN R -e "devtools::install_github('comoto-pasteur-fr/DNABarcodeCompatibility', ref='bioconductor')"
+
 
 # copy the app to the image
 RUN mkdir /root/DNABarcodeCompatibility_ShinyApp
