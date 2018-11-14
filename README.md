@@ -34,15 +34,17 @@ runGitHub("comoto-pasteur-fr/DNABarcodeCompatibility_Shiny", subdir="R", launch.
 #### Advanced setup using docker
 
 * First install [docker](https://docs.docker.com/install/) if not yet installed.
-* Install the Shiny App
+* Install and run the Shiny App
 
 ```
 # In a shell console type in the following commands
 docker pull etournay/dna_barcode_compatibility_shiny
-docker create --name barcode_shiny -d -p 8080:3838 etournay/dna_barcode_compatibility_shiny
+docker run --name barcode_shiny -d -p 8080:3838 etournay/dna_barcode_compatibility_shiny
 ```
 
-* Start and stop the Shiny App
+* Access the Shiny App from your web browser: [localhost:8080](http://localhost:8080)
+
+* Start and stop the Shiny App on demand
 
 ```
 # Start barcode_shiny
@@ -52,7 +54,7 @@ docker start barcode_shiny
 docker stop barcode_shiny
 ```
 
-* Access the Shiny App from your web browser: [localhost:8080](http://localhost:8080)
+
 
 
 Documentation
