@@ -37,7 +37,16 @@ body <- dashboardBody(
     ######################
     
     tabItem(tabName = "tuto",
-            h2("tutorial tab content")
+            h2("Tutorial"),
+            tags$img(src="pictureShiny.png", height="80%", width="80%"),
+            h4("1)	Select the platform"),
+            h4("2)	Load the barcode sets (one for single indexing and two for dual indexing)"),
+            h4("3)	Indicate the number of libraries to be sequenced"),
+            h4("4)	Select the desired multiplex level"),
+            h4("5)	Input additional barcode constraints (nucleotide content and pairwise distance)"),
+            h4("PRESS Search"),
+            h4("6)	Results are shown graphically"), 
+            h4("7)	Results are shown in text mode")
     ),
     
     #############################
