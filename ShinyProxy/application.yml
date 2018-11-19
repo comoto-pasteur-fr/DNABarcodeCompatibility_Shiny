@@ -8,7 +8,7 @@ proxy:
     display-name: DNABarcodeCompatibility
     description: Shiny interface for DNABarcodeCompatibility
     container-cmd: ["R", "-e", "shiny::runApp('/root/DNABarcodeCompatibility_ShinyApp')"]
-	container-memory: 3g
+    container-memory: 3g
     container-image: etournay/dna_barcode_compatibility_shiny
     container-network: sp-example-net
 
