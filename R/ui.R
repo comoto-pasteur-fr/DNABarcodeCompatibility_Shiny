@@ -310,7 +310,9 @@ body <- dashboardBody(
     ##################
     
     tabItem(tabName = "help",
-            h2("help tab content")
+            h2("Help"),
+            tags$iframe(src = "Documentation.html", seamless=NA, scrolling="auto", height=600, width="100%")
+            
     )
   )
 )
