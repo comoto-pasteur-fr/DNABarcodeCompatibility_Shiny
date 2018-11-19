@@ -43,6 +43,6 @@ echo "CONTAINER STATUS: please, make sure that the container etournay/shinyproxy
 docker ps -a
 
 echo "If the container is up and running then you can access it using the IP address:"
-echo "http://host-ip:8080"
+echo "http://localhost:8080"
 
 
