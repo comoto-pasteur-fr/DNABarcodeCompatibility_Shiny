@@ -6,8 +6,10 @@ library(DNABarcodeCompatibility)
 
 if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
     packageVersion("DNABarcodeCompatibility") == '1.0.0') {
-    stop(paste( "Please update DNABarcodeCompatibility:",
-            "https://github.com/comoto-pasteur-fr/DNABarcodeCompatibility"))
+    setRepositories(ind=1:2)
+    devtools::install_github("comoto-pasteur-fr/DNABarcodeCompatibility",
+                             ref="revision", force=TRUE)
+    library("DNABarcodeCompatibility")
 }
 
 source("html_output.R")
