@@ -3,6 +3,13 @@ library(stringr)
 library(DT)
 library(shinyjs)
 library(DNABarcodeCompatibility)
+
+if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
+    packageVersion("DNABarcodeCompatibility") == '1.0.0') {
+    stop(paste( "Please update DNABarcodeCompatibility:",
+            "https://github.com/comoto-pasteur-fr/DNABarcodeCompatibility"))
+}
+
 source("html_output.R")
 
 platformsVec <-
