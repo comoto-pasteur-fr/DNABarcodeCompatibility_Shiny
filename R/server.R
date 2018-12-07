@@ -3,6 +3,16 @@ library(stringr)
 library(DT)
 library(shinyjs)
 library(DNABarcodeCompatibility)
+
+if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
+    packageVersion("DNABarcodeCompatibility") == '1.0.0') {
+    setRepositories(ind=1:2)
+    devtools::install_github("comoto-pasteur-fr/DNABarcodeCompatibility",
+                             ref="revision", force=TRUE)
+    stop(paste("A new version of DNABarcodeCompatibility has been installed,",
+               "please restart R before starting the Shiny App."))
+}
+
 source("html_output.R")
 
 platformsVec <-

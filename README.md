@@ -10,7 +10,7 @@ Start up / installation
 #### Requirements
 
 * Install [R](https://www.r-project.org/) if not yet installed (R >= 3.4 is required).
-* Install the [DNABarcodeCompatibility](https://github.com/comoto-pasteur-fr/DNABarcodeCompatibility#installation) R-package if not yet installed.
+* Install the latest version of  [DNABarcodeCompatibility](https://github.com/comoto-pasteur-fr/DNABarcodeCompatibility#installation) R-package if not yet installed.
 * Within a R console, type in the following commands:
 
 ```
@@ -60,7 +60,7 @@ docker stop barcode_shiny
 Documentation
 ================
 
-* [Quick start tutorial](https://comoto-pasteur-fr.github.io/DNABarcodeCompatibility_Shiny/quickstart_tutorial/quickStartTutorial.pdf)
+* Check the tutorial and help menus in the Shiny web app.
 
 
 Support

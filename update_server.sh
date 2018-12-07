@@ -42,7 +42,7 @@ docker run -d -v /var/run/docker.sock:/var/run/docker.sock --net sp-example-net 
 echo "CONTAINER STATUS: please, make sure that the container etournay/shinyproxy is up and running" 
 docker ps -a
 
-echo "If the container is up and running then you can access it using using IP address:"
-echo "http://host-ip:8080"
+echo "If the container is up and running then you can access it using the IP address:"
+echo "http://localhost:8080"
 
 
