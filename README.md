@@ -77,7 +77,7 @@ We also welcome pull requests.
 Reference
 ==========
 
-Trébeau, C., Boutet de Monvel, J., Wong Jun Tai, F., Petit, C., and Etournay, R. DNABarcodeCompatibility: an R-package for optimizing DNA-barcode combinations in multiplex sequencing experiments. Bioinformatics. [![DOI](10.1093/bioinformatics/bty1030)
+Trébeau, C., Boutet de Monvel, J., Wong Jun Tai, F., Petit, C., and Etournay, R. DNABarcodeCompatibility: an R-package for optimizing DNA-barcode combinations in multiplex sequencing experiments. Bioinformatics. [10.1093/bioinformatics/bty1030](10.1093/bioinformatics/bty1030)
 
 
 
