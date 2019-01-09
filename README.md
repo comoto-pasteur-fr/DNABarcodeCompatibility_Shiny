@@ -2,9 +2,12 @@ About
 =================
 
 Shiny front-end for the DNABarcodeCompatibility R-package.
+Maintainer: Fabienne Wong Jun Tai
+
+[Shiny Web App](https://dnabarcodecompatibility.pasteur.fr)
 
 
-Start up / installation 
+Local installation / Start up
 ================
 
 #### Requirements
@@ -74,6 +77,7 @@ We also welcome pull requests.
 Reference
 ==========
 
-Céline Trébeau, Jacques Boutet de Monvel, Fabienne Wong Jun Tai, Raphaël Etournay. (2018, May 31). comoto-pasteur-fr/DNABarcodeCompatibility: First complete release (Version v0.0.0.9000). Zenodo. [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1256863.svg)](https://doi.org/10.5281/zenodo.1256863)
+Trébeau, C., Boutet de Monvel, J., Wong Jun Tai, F., Petit, C., and Etournay, R. DNABarcodeCompatibility: an R-package for optimizing DNA-barcode combinations in multiplex sequencing experiments. Bioinformatics. [![DOI](10.1093/bioinformatics/bty1030)
+
 
 
