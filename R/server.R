@@ -135,7 +135,7 @@ server <- function(input, output, session) {
       output$single_input_error_message <- renderText("")
       output$single_loaded_data <-
         renderDataTable(
-          datatable(single_index_df(), options = list(pageLength = 25)) %>% formatStyle(
+          datatable(single_index_df(), options = list(pageLength = 25), selection = "none") %>% formatStyle(
             'valid',
             target = "row",
             backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
@@ -319,7 +319,7 @@ server <- function(input, output, session) {
       output$dual_input_error_message1 <- renderText("")
       output$dual_loaded_data1 <-
         renderDataTable(
-          datatable(dual_index_df1(), options = list(pageLength = 25)) %>% formatStyle(
+          datatable(dual_index_df1(), options = list(pageLength = 25), selection = "none") %>% formatStyle(
             'valid',
             target = "row",
             backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
@@ -339,7 +339,7 @@ server <- function(input, output, session) {
       output$dual_input_error_message2 <- renderText("")
       output$dual_loaded_data2 <-
         renderDataTable(
-          datatable(dual_index_df2(), options = list(pageLength = 25)) %>% formatStyle(
+          datatable(dual_index_df2(), options = list(pageLength = 25), selection = "none") %>% formatStyle(
             'valid',
             target = "row",
             backgroundColor = styleEqual(c(TRUE, FALSE), c('#DEFFD4', '#FFADAD'))
