@@ -13,7 +13,7 @@ if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
                "please restart R before starting the Shiny App."))
 }
 
-source("html_output.R")
+#source("html_output.R")
 
 platformsVec <-
   c(
