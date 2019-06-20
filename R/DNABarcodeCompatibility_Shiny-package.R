@@ -22,5 +22,6 @@
 #' @import DT
 #' @import shinyjs
 #' @import stringr
+#' @import htmlTable
 #' @import DNABarcodeCompatibility
 NULL

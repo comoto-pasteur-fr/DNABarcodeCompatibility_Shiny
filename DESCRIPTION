@@ -1,6 +1,6 @@
 Package: DNABarcodeCompatibilityShiny
 Type: Package
-Title: A Shiny interface for the DNABarcodeCompatibility package
+Title: A Shiny Interface for the DNABarcodeCompatibility Package
 Version: 0.99.0
 Maintainer: Fabienne Wong Jun Tai <virginie.wong-jun-tai@pasteur.fr>
 Authors@R: c(
@@ -13,7 +13,7 @@ License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: dplyr, tidyr, numbers, purrr, stringr, DNABarcodeCompatibility, stats, utils, methods
+Imports: shiny, shinydashboard, DT, shinyjs, stringr, DNABarcodeCompatibility, htmlTable
 Depends: R (>= 3.6.0)
 Suggests: knitr, rmarkdown, BiocStyle, testthat
 VignetteBuilder: knitr
