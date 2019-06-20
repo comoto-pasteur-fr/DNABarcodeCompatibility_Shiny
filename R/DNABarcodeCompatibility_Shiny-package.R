@@ -1,4 +1,4 @@
-#' DNABarcodeCompatibility_Shiny: 
+#' DNABarcodeCompatibilityShiny: 
 #' A web app to find optimised sets of compatible barcodes with least 
 #' heterogeneity in barcode usage for multiplex
 #' experiments performed on next generation sequencing platforms.
@@ -16,7 +16,7 @@
 #' heterogeneity in barcode usage.
 #'    
 #' @docType package
-#' @name DNABarcodeCompatibility_Shiny-package
+#' @name DNABarcodeCompatibilityShiny-package
 #' @import shiny
 #' @import shinydashboard
 #' @import DT

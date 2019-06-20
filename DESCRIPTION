@@ -1,4 +1,4 @@
-Package: DNABarcodeCompatibility_Shiny
+Package: DNABarcodeCompatibilityShiny
 Type: Package
 Title: A Shiny interface for the DNABarcodeCompatibility package
 Version: 0.99.0
