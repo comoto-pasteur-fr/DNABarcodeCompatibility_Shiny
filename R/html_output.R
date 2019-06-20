@@ -1,7 +1,5 @@
 ## Html output of experiment_design
 
-
-
 library('htmlTable')
 library("dplyr")
 

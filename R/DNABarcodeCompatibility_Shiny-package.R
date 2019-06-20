@@ -23,5 +23,6 @@
 #' @import shinyjs
 #' @import stringr
 #' @import htmlTable
+#' @import dplyr
 #' @import DNABarcodeCompatibility
 NULL
