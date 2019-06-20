@@ -1,0 +1,25 @@
+---
+title: "Introduction to DNABarcodeCompatibilityShiny"
+author: "Fabienne Wong Jun Tai, Céline Trébeau, 
+Jacques Boutet de Monvel, Raphaël Etournay"
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+    BiocStyle::pdf_document:
+        toc: true
+vignette: >
+    %\VignetteIndexEntry{Introduction to DNABarcodeCompatibilityShiny}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+    \usepackage[utf8]{inputenc}
+---
+
+
+```{r style, echo = FALSE, results = 'asis', warnings=FALSE, messages=FALSE}
+# <style>
+# body {
+# text-align: justify}
+# </style>
+BiocStyle::markdown()
+```

@@ -13,6 +13,7 @@ Launches the web interface
 Start up the DNABarcodeCompatibilityShiny interface
 }
 \examples{
-startup()
+# Just run startup()
+ls()
 
 }

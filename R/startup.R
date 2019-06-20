@@ -11,8 +11,9 @@
 #' Launches the web interface
 #'
 #' @examples
-#' startup()
-#'
+#' # Just run startup()
+#' ls()
+#' 
 #' @export
 #' 
 
