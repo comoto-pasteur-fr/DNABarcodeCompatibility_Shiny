@@ -4,16 +4,28 @@ library(DT)
 library(shinyjs)
 library(DNABarcodeCompatibility)
 
-if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
-    packageVersion("DNABarcodeCompatibility") == '1.0.0') {
-    setRepositories(ind=1:2)
-    devtools::install_github("comoto-pasteur-fr/DNABarcodeCompatibility",
-                             ref="revision", force=TRUE)
-    stop(paste("A new version of DNABarcodeCompatibility has been installed,",
-               "please restart R before starting the Shiny App."))
-}
+# if (packageVersion("DNABarcodeCompatibility") < '0.99.0' ||
+#     packageVersion("DNABarcodeCompatibility") == '1.0.0') {
+#     setRepositories(ind=seq_len(2))
+#     devtools::install_github("comoto-pasteur-fr/DNABarcodeCompatibility",
+#                              ref="revision", force=TRUE)
+#     stop(paste("A new version of DNABarcodeCompatibility has been installed,",
+#                "please restart R before starting the Shiny App."))
+# }
 
 #source("html_output.R")
+globalVariables(
+    c(
+        "error_message",
+        "Id",
+        "GC_content",
+        "homopolymer",
+        "valid",
+        "write.csv",
+        "."
+    )
+)
+
 
 platformsVec <-
   c(
@@ -34,7 +46,7 @@ distancesVec <-
 update_valid_data <- function(df, gc_content_min, gc_content_max, remove_homopolymer) {
   valid = c()
   if (!is.null(df)){
-    for (i in 1:nrow(df)) {
+    for (i in seq_len(nrow(df))) {
       if (df$GC_content[i] >= gc_content_min() &&
           df$GC_content[i] <= gc_content_max()){
         if ((!df$homopolymer[i] && remove_homopolymer()) || !remove_homopolymer()) {
